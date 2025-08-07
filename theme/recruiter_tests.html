@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tests - TestGenius</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md flex flex-col">
+            <div class="flex items-center justify-center h-20 border-b">
+                <span class="text-2xl font-['Pacifico'] text-primary">TestGenius</span>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="recruiter_dashboard.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-dashboard-line mr-3"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="recruiter_tests.html" class="flex items-center px-4 py-2 text-white bg-primary rounded-lg">
+                    <i class="ri-file-list-3-line mr-3"></i>
+                    <span>Tests</span>
+                </a>
+                <a href="recruiter_candidates.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-team-line mr-3"></i>
+                    <span>Candidates</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-bar-chart-box-line mr-3"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-settings-3-line mr-3"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="px-4 py-6 border-t">
+                <a href="home.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-logout-box-r-line mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Topbar -->
+            <header class="bg-white shadow-sm border-b h-20 flex items-center justify-end px-8">
+                 <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64">
+                        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                            <i class="ri-search-line text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img class="h-10 w-10 rounded-full object-cover" src="https://i.pravatar.cc/150?u=recruiter" alt="Recruiter Avatar">
+                        <div>
+                            <div class="font-semibold">John Doe</div>
+                            <div class="text-sm text-gray-500">Recruiter</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">My Tests</h1>
+                    <a href="add_new_test.html" class="bg-primary text-white px-6 py-3 font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button flex items-center space-x-2">
+                        <i class="ri-add-line"></i>
+                        <span>Create New Test</span>
+                    </a>
+                </div>
+
+                <!-- Tests Table -->
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Created</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. of Candidates</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Frontend Developer Skill Assessment</div>
+                                    <div class="text-sm text-gray-500">React, Tailwind CSS, JavaScript</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">July 26, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-blue-700 mr-4">View Results</a>
+                                    <a href="#" class="text-yellow-600 hover:text-yellow-800 mr-4">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-800">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Backend Developer Challenge</div>
+                                    <div class="text-sm text-gray-500">Node.js, Express, MongoDB</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">July 20, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Draft</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-blue-700 mr-4">View Results</a>
+                                    <a href="#" class="text-yellow-600 hover:text-yellow-800 mr-4">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-800">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">UI/UX Design Principles Test</div>
+                                    <div class="text-sm text-gray-500">Figma, Prototyping</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">July 15, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Closed</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">50</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-blue-700 mr-4">View Results</a>
+                                    <a href="#" class="text-yellow-600 hover:text-yellow-800 mr-4">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-800">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

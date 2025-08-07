@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMeter API Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .endpoint {
+            background: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 3px 3px 0;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: white;
+            margin-right: 10px;
+        }
+        .get { background: #2ecc71; }
+        .post { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>SkillMeter API Documentation</h1>
+    <p>Last updated: <span id="current-date"></span></p>
+    
+    <h2>API Design Philosophy</h2>
+    <ul>
+        <li><strong>Minimal Endpoints</strong>: Only 3 core endpoints for all CRUD operations</li>
+        <li><strong>Dynamic Operations</strong>: Specify table/module in request payload</li>
+        <li><strong>Standardized Responses</strong>: Consistent JSON structure across all endpoints</li>
+    </ul>
+
+    <h2>Authentication</h2>
+    <div class="endpoint">
+        <span class="method post">POST</span> <code>/api/auth/login</code>
+        <p>Get your authentication token:</p>
+        <pre>{
+  "email": "user@example.com",
+  "password": "yourpassword"
+}</pre>
+        <p>Response includes <code>token</code> to use in <code>Authorization: Bearer</code> header</p>
+    </div>
+
+    <h2>Core Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method post">POST</span> <code>/api/data/{operation}</code>
+        <p>Perform CRUD operations by specifying the target table/module in payload.</p>
+        
+        <h3>Operations:</h3>
+        <table>
+            <tr>
+                <th>Operation</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td><code>create</code></td>
+                <td>Insert new records</td>
+                <td>
+                    <pre>{
+  "table": "tests",
+  "data": {
+    "title": "Python Basics",
+    "duration": 30
+  }
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td><code>read</code></td>
+                <td>Fetch records with filtering</td>
+                <td>
+                    <pre>{
+  "table": "questions",
+  "fields": ["id", "text"],
+  "where": {
+    "difficulty": "easy"
+  },
+  "limit": 10
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td><code>update</code></td>
+                <td>Modify existing records</td>
+                <td>
+                    <pre>{
+  "table": "users",
+  "where": {
+    "id": 42
+  },
+  "data": {
+    "status": "active"
+  }
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td><code>delete</code></td>
+                <td>Remove records (soft delete)</td>
+                <td>
+                    <pre>{
+  "table": "invitations",
+  "where": {
+    "expired": true
+  }
+}</pre>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span> <code>/api/schema/{table}</code>
+        <p>Get table structure and field information:</p>
+        <pre>GET /api/schema/questions</pre>
+        <p>Response:</p>
+        <pre>{
+  "fields": [
+    {
+      "name": "id",
+      "type": "integer",
+      "required": true
+    },
+    {
+      "name": "text",
+      "type": "text",
+      "required": true
+    }
+  ],
+  "relations": ["tests", "categories"]
+}</pre>
+    </div>
+
+    <h2>Specialized Endpoints</h2>
+    
+    <div class="endpoint">
+        <span class="method post">POST</span> <code>/api/ai/generate</code>
+        <p>Generate content via AI:</p>
+        <pre>{
+  "type": "questions",
+  "params": {
+    "topic": "JavaScript",
+    "count": 5
+  }
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span> <code>/api/cheating/detect</code>
+        <p>Report cheating incidents:</p>
+        <pre>{
+  "test_id": 15,
+  "user_id": 42,
+  "event_type": "tab_switch",
+  "screenshot": "base64encodedImage"
+}</pre>
+    </div>
+
+    <h2>Response Structure</h2>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Description</th>
+            <th>Example</th>
+        </tr>
+        <tr>
+            <td><code>success</code></td>
+            <td>Boolean operation status</td>
+            <td><code>true</code></td>
+        </tr>
+        <tr>
+            <td><code>data</code></td>
+            <td>Result payload</td>
+            <td><code>{"id": 1, "title": "Test"}</code></td>
+        </tr>
+        <tr>
+            <td><code>meta</code></td>
+            <td>Pagination/operation info</td>
+            <td><code>{"total": 15, "page": 1}</code></td>
+        </tr>
+        <tr>
+            <td><code>errors</code></td>
+            <td>Validation/operation errors</td>
+            <td><code>{"email": ["Invalid format"]}</code></td>
+        </tr>
+    </table>
+
+    <h2>Error Codes</h2>
+    <table>
+        <tr>
+            <th>Code</th>
+            <th>Meaning</th>
+        </tr>
+        <tr>
+            <td><code>400</code></td>
+            <td>Bad request (validation errors)</td>
+        </tr>
+        <tr>
+            <td><code>401</code></td>
+            <td>Unauthenticated</td>
+        </tr>
+        <tr>
+            <td><code>403</code></td>
+            <td>Forbidden (no permissions)</td>
+        </tr>
+        <tr>
+            <td><code>404</code></td>
+            <td>Resource not found</td>
+        </tr>
+        <tr>
+            <td><code>500</code></td>
+            <td>Server error</td>
+        </tr>
+    </table>
+
+    <script>
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+    </script>
+</body>
+</html>
