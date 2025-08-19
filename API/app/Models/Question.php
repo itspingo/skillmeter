@@ -6,6 +6,20 @@ class Question extends BaseModel
 {
     protected $table = 'questions';
 
+    protected $fillable = [
+        'test_id',
+        'type_id',
+        'difficulty_id',
+        'question_data',
+        'is_ai_generated',
+        'explanation',
+        'time_limit',
+        'max_score',
+        'base_lang',
+        'active',
+        'created_by'
+    ];
+
     public function type()
     {
         return $this->belongsTo(QuestionType::class, 'type_id');

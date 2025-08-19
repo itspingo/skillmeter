@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMeter API Usage Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        pre {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+            color: #212529;
+        }
+        code {
+            font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+        }
+        .endpoint {
+            border-left: 4px solid #007bff;
+            padding-left: 20px;
+            margin: 30px 0;
+        }
+        .method {
+            font-weight: bold;
+            font-size: 1.1em;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #fff;
+            margin-right: 10px;
+        }
+        .method.get { background-color: #28a745; }
+        .method.post { background-color: #007bff; }
+        .method.put { background-color: #ffc107; color: #212529; }
+        .method.delete { background-color: #dc3545; }
+        .url {
+            font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+            background: #f1f3f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffeeba;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SkillMeter API Usage Guide</h1>
+
+        <div class="note">
+            <p><strong>Base URL:</strong> All API endpoints are relative to your application's base URL (e.g., <code>http://localhost:8000/</code>).</p>
+            <p><strong>Authentication:</strong> Most endpoints are protected and require a Bearer Token. First, log in to get a token, then include it in the <code>Authorization</code> header for all subsequent requests: <code>Authorization: Bearer {your_token}</code>.</p>
+        </div>
+
+        <!-- ==================== Auth Controller ==================== -->
+        <section id="auth">
+            <h2>Authentication</h2>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/register</span></h3>
+                <p>Register a new user.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "user_type_id": 2 // Or appropriate type ID
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/login</span></h3>
+                <p>Log in to receive an authentication token.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "email": "john.doe@example.com",
+    "password": "password123"
+}</code></pre>
+                <strong>Success Response:</strong>
+                <pre><code>{
+    "token": "1|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "user": { ... }
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/me</span></h3>
+                <p>Get the authenticated user's details. (Requires Bearer Token)</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/logout</span></h3>
+                <p>Log out the current user. (Requires Bearer Token)</p>
+            </div>
+        </section>
+
+        <!-- ==================== Test Controller ==================== -->
+        <section id="tests">
+            <h2>Tests</h2>
+            <p>Manage skill assessment tests. All endpoints require authentication.</p>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/tests</span></h3>
+                <p>List all tests created by the authenticated user.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/tests</span></h3>
+                <p>Create a new test.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "title": "Advanced PHP Test",
+    "description": "A test to evaluate advanced PHP skills.",
+    "duration_minutes": 60
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/tests/{id}</span></h3>
+                <p>Get details of a specific test.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method put">PUT</span><span class="url">/tests/{id}</span></h3>
+                <p>Update a test.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method delete">DELETE</span><span class="url">/tests/{id}</span></h3>
+                <p>Delete a test.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/tests/{test_id}/questions</span></h3>
+                <p>Add questions to a test.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "questions": [
+        { "question_id": 1, "weight": 2 },
+        { "question_id": 5, "weight": 1 }
+    ]
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/tests/{test_id}/invite</span></h3>
+                <p>Invite candidates to take a test.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "emails": ["candidate1@example.com", "candidate2@example.com"],
+    "expires_at": "2025-12-31 23:59:59"
+}</code></pre>
+            </div>
+             <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/tests/invitation/{token}</span></h3>
+                <p>Get test details via a public invitation token. (No Auth Required)</p>
+            </div>
+        </section>
+
+        <!-- ==================== Question Controller ==================== -->
+        <section id="questions">
+            <h2>Questions</h2>
+            <p>Manage questions for tests. All endpoints require authentication.</p>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/questions</span></h3>
+                <p>List all questions created by the authenticated user.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/questions</span></h3>
+                <p>Create a new question.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "question_text": "What is the output of `echo 'a' . 'b';`?",
+    "question_type_id": 1, // MCQ
+    "question_category_id": 3, // PHP
+    "difficulty_level_id": 2, // Intermediate
+    "options": [
+        { "option_text": "ab", "is_correct": true },
+        { "option_text": "a b", "is_correct": false }
+    ]
+}</code></pre>
+            </div>
+            
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/questions/generate-ai</span></h3>
+                <p>Submit a request to generate questions using AI.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "topic": "Laravel Eloquent",
+    "difficulty": "Intermediate",
+    "question_type": "MCQ_Single",
+    "count": 5
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== Test Attempt Controller ==================== -->
+        <section id="attempts">
+            <h2>Test Attempts</h2>
+            <p>View and manage test attempts.</p>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/attempts</span></h3>
+                <p>List test attempts. Recruiters see attempts for their tests; candidates see their own. (Requires Auth)</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/attempts/{id}</span></h3>
+                <p>Get details of a specific test attempt. (Requires Auth)</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/tests/invitation/{token}/start</span></h3>
+                <p>Start a test using an invitation token. (No Auth Required)</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/attempts/{attemptId}/submit</span></h3>
+                <p>Submit a test attempt. (Requires Auth)</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "responses": [
+        { "question_id": 1, "selected_option_ids": [3] },
+        { "question_id": 2, "answer_text": "This is a text answer." }
+    ]
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== Cheating Data Controller ==================== -->
+        <section id="cheating">
+            <h2>Cheating Detection</h2>
+            <p>Endpoints for proctoring and cheating data analysis. (Requires Auth)</p>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/cheating</span></h3>
+                <p>List cheating incidents. Scoped to the user's role.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span><span class="url">/cheating</span></h3>
+                <p>Store a new cheating incident.</p>
+                <strong>Request Body:</strong>
+                <pre><code>{
+    "test_id": 15,
+    "event_type": "Multiple Faces Detected",
+    "confidence": "0.95",
+    "process_time": "2025-08-08 10:30:00"
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span><span class="url">/test/{testId}/summary</span></h3>
+                <p>Get a summary of cheating incidents for a specific test.</p>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

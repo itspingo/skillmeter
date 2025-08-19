@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BaseController extends Controller
 {
@@ -14,16 +15,19 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        if ($this->model) {
-            $this->middleware('auth:api')->except(['index', 'show']);
-        }
+        $this->middleware('auth:sanctum');
+    }
+
+    protected function scopeQuery($query)
+    {
+        return $query->where('created_by', Auth::id());
     }
 
     public function index(Request $request)
     {
-        $query = $this->model::query()
+        $query = $this->scopeQuery($this->model::query())
             ->with($this->withRelations)
-            ->active();
+            ->active(); 
 
         // Add search/filter logic here if needed
 
@@ -47,7 +51,8 @@ class BaseController extends Controller
 
     public function show($id)
     {
-        $item = $this->model::with($this->withRelations)
+        $item = $this->scopeQuery($this->model::query())
+            ->with($this->withRelations)
             ->active()
             ->findOrFail($id);
 
@@ -56,7 +61,7 @@ class BaseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $item = $this->model::findOrFail($id);
+        $item = $this->scopeQuery($this->model::query())->findOrFail($id);
 
         $data = $request->validate($this->model::validationRules('update'));
 
@@ -67,7 +72,7 @@ class BaseController extends Controller
 
     public function destroy($id)
     {
-        $item = $this->model::findOrFail($id);
+        $item = $this->scopeQuery($this->model::query())->findOrFail($id);
         $item->delete();
 
         return response()->json(['message' => 'Item deleted successfully']);

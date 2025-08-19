@@ -1,0 +1,5 @@
+.env
+proj_discussion.txt
+/screenshots
+/flask_app/.env
+/API/.env

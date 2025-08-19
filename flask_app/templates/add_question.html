@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New Question - SkillMeter.ai{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card card-sidebar">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="#" class="nav-link active">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="nav-link">
+                                <i class="bi bi-file-earmark-text"></i> Tests
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="nav-link">
+                                <i class="bi bi-people"></i> Candidates
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="nav-link">
+                                <i class="bi bi-bar-chart"></i> Analytics
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="nav-link">
+                                <i class="bi bi-gear"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <a href="#" class="btn btn-danger w-100">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Create New Question</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('create_question') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="question_data" class="form-label">Question Text</label>
+                            <textarea class="form-control" id="question_data" name="question_data" rows="3" required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="type_id" class="form-label">Question Type</label>
+                                <select class="form-select" id="type_id" name="type_id" required>
+                                    {% for type in question_types %}
+                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="difficulty_id" class="form-label">Difficulty Level</label>
+                                <select class="form-select" id="difficulty_id" name="difficulty_id" required>
+                                    {% for level in difficulty_levels %}
+                                    <option value="{{ level.id }}">{{ level.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="test_id" class="form-label">Test</label>
+                                <select class="form-select" id="test_id" name="test_id" required>
+                                    {% for test in tests %}
+                                    <option value="{{ test.id }}">{{ test.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="max_score" class="form-label">Max Score</label>
+                                <input type="number" class="form-control" id="max_score" name="max_score" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="time_limit" class="form-label">Time Limit (seconds)</label>
+                                <input type="number" class="form-control" id="time_limit" name="time_limit" value="60">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="base_lang" class="form-label">Base Language</label>
+                                <input type="text" class="form-control" id="base_lang" name="base_lang" value="en" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="explanation" class="form-label">Explanation</label>
+                            <textarea class="form-control" id="explanation" name="explanation" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="is_ai_generated" name="is_ai_generated">
+                            <label class="form-check-label" for="is_ai_generated">
+                                AI Generated
+                            </label>
+                        </div>
+
+                        <hr>
+                        <h5>Options</h5>
+                        <div id="options-container">
+                            </div>
+                        <button type="button" id="add-option" class="btn btn-secondary mt-2">Add Option</button>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Create Question</button>
+                            <a href="{{ url_for('recruiter_questions') }}" class="btn btn-link">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

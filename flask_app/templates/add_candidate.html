@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Add Candidate{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-gray-100">
+  
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+       
+        
+        <!-- Page Content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Add New Candidate</h1>
+
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <form action="{{ url_for('add_candidate') }}" method="POST">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" name="first_name" id="first_name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" id="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" name="password" id="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                            <input type="hidden" id="user_type" name="user_type" value="candidate">
+                        </div>
+                       
+                        <div>
+                            <label for="is_active" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="is_active" id="is_active" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="{{ url_for('recruiter_candidates') }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-md mr-4 hover:bg-gray-300">Cancel</a>
+                        <button type="submit" class="bg-secondary text-white px-6 py-2 rounded-md font-semibold hover:bg-green-600">Add Candidate</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+    </div>
+</div>
+{% endblock %}

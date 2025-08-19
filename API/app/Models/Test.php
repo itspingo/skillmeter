@@ -6,16 +6,11 @@ class Test extends BaseModel
 {
     protected $table = 'tests';
 
-    public static function validationRules($context = 'create')
-    {
-        return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'duration' => 'nullable|integer|min:1',
-            'status' => 'in:draft,published,archived',
-            'difficulty_level_id' => 'nullable|exists:difficulty_levels,id',
-        ];
-    }
+    protected $fillable = [
+       'name', 'description', 'created_by', 'time_limit', 'difficulty_id', 'is_public', 'is_active', 'pass_threshold', 'show_score', 'show_answers', 'randomize_questions', 'allow_backtracking', 'instructions', 'base_lang', 'active', 'created_at', 'updated_at', 'deleted_at'
+    ];
+
+    
 
     public function creator()
     {
@@ -24,9 +19,7 @@ class Test extends BaseModel
 
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'test_questions', 'test_id', 'question_id')
-            ->withPivot('question_order', 'section_name', 'weight')
-            ->orderBy('test_questions.question_order');
+        return $this->hasMany(Question::class, 'test_id');
     }
 
     public function testQuestions()

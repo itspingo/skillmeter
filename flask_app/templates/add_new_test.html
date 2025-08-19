@@ -103,63 +103,116 @@
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Create a New Test</h1>
                     <p class="text-gray-600 mb-8">Fill out the details below to generate a new test with our AI-powered engine.</p>
                     
-                    <form action="#" method="POST">
+                    <form action="{{ url_for('create_test') }}" method="POST">
                         <div class="space-y-6">
-                            <div>
-                                <label for="test-name" class="block text-sm font-medium text-gray-700">Test Name</label>
-                                <input type="text" name="test-name" id="test-name" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g., Senior Frontend Developer Assessment">
-                            </div>
-
-                            <div>
-                                <label for="test-description" class="block text-sm font-medium text-gray-700">Job Description / Skills to Test</label>
-                                <textarea id="test-description" name="test-description" rows="6" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Paste the job description here or list the key skills you want to assess (e.g., React, Node.js, SQL, Problem Solving). Our AI will generate relevant questions based on this input."></textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Test Configuration</label>
-                                <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Basic Information Section -->
+                            <div class="border-b border-gray-200 pb-6">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h2>
+                                <div class="grid grid-cols-1 gap-6">
                                     <div>
-                                        <label for="num-questions" class="block text-sm text-gray-600">Number of Questions</label>
-                                        <select id="num-questions" name="num-questions" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                                            <option>10</option>
-                                            <option selected>20</option>
-                                            <option>30</option>
-                                            <option>50</option>
-                                        </select>
+                                        <label for="title" class="block text-sm font-medium text-gray-700">Test Title</label>
+                                        <input type="text" name="title" id="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g., Senior Frontend Developer Assessment" required>
                                     </div>
+
                                     <div>
-                                        <label for="test-duration" class="block text-sm text-gray-600">Test Duration (minutes)</label>
-                                        <input type="number" name="test-duration" id="test-duration" value="30" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea id="description" name="description" rows="3" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Brief description of the test"></textarea>
+                                    </div>
+
+                                    <div>
+                                        <label for="instructions" class="block text-sm font-medium text-gray-700">Instructions</label>
+                                        <textarea id="instructions" name="instructions" rows="4" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Detailed instructions for candidates taking this test"></textarea>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Test Configuration Section -->
+                            <div class="border-b border-gray-200 pb-6">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Test Configuration</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="time_limit" class="block text-sm font-medium text-gray-700">Time Limit (minutes)</label>
+                                        <input type="number" name="time_limit" id="time_limit" min="1" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="30" required>
+                                    </div>
+
+                                    <div>
+                                        <label for="difficulty_id" class="block text-sm font-medium text-gray-700">Difficulty Level</label>
+                                        <select id="difficulty_id" name="difficulty_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            {% for difficulty in difficulties %}
+                                                <option value="{{ difficulty.id }}">{{ difficulty.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label for="pass_threshold" class="block text-sm font-medium text-gray-700">Pass Threshold (%)</label>
+                                        <input type="number" name="pass_threshold" id="pass_threshold" min="0" max="100" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="70">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Test Settings Section -->
+                            <div class="border-b border-gray-200 pb-6">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Test Settings</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input id="is_public" name="is_public" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                            <label for="is_public" class="ml-2 block text-sm text-gray-700">Make test public</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="is_active" name="is_active" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                            <label for="is_active" class="ml-2 block text-sm text-gray-700">Activate test immediately</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="show_score" name="show_score" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                            <label for="show_score" class="ml-2 block text-sm text-gray-700">Show score to candidates</label>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input id="show_answers" name="show_answers" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                            <label for="show_answers" class="ml-2 block text-sm text-gray-700">Show correct answers after test</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="randomize_questions" name="randomize_questions" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                            <label for="randomize_questions" class="ml-2 block text-sm text-gray-700">Randomize question order</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="allow_backtracking" name="allow_backtracking" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                            <label for="allow_backtracking" class="ml-2 block text-sm text-gray-700">Allow backtracking</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Anti-Cheating Measures Section -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Anti-Cheating Measures</label>
-                                <div class="mt-2 space-y-2">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Anti-Cheating Measures</h2>
+                                <div class="space-y-2">
                                     <div class="flex items-center">
-                                        <input id="webcam-proctoring" name="proctoring[]" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
-                                        <label for="webcam-proctoring" class="ml-2 block text-sm text-gray-900">Enable Webcam Proctoring</label>
+                                        <input id="webcam-proctoring" name="webcam_proctoring" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                        <label for="webcam-proctoring" class="ml-2 block text-sm text-gray-700">Enable Webcam Proctoring</label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input id="screen-recording" name="proctoring[]" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
-                                        <label for="screen-recording" class="ml-2 block text-sm text-gray-900">Enable Screen Recording</label>
+                                        <input id="screen-recording" name="screen_recording" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" checked>
+                                        <label for="screen-recording" class="ml-2 block text-sm text-gray-700">Enable Screen Recording</label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input id="tab-switching" name="proctoring[]" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
-                                        <label for="tab-switching" class="ml-2 block text-sm text-gray-900">Detect Tab Switching</label>
+                                        <input id="tab-switching" name="detect_tab_switching" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                        <label for="tab-switching" class="ml-2 block text-sm text-gray-700">Detect Tab Switching</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-8 pt-5 border-t border-gray-200 flex justify-end space-x-4">
-                            <a href="recruiter_tests.html" class="bg-gray-100 text-gray-700 px-6 py-3 font-semibold hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap !rounded-button">
+                            <a href="{{ url_for('recruiter_tests') }}" class="bg-gray-100 text-gray-700 px-6 py-3 font-semibold hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap !rounded-button">
                                 Cancel
                             </a>
                             <button type="submit" class="bg-primary text-white px-6 py-3 font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button flex items-center space-x-2">
-                                <i class="ri-lightbulb-flash-line"></i>
-                                <span>Generate Test</span>
+                                <i class="ri-save-line"></i>
+                                <span>Save Test</span>
                             </button>
                         </div>
                     </form>

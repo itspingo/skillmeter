@@ -17,14 +17,6 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-            'user_type' => ['required', 'in:recruiter,candidate,self_assessor']
-        ]);
-
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -61,8 +53,6 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
-
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
@@ -77,8 +67,6 @@ class AuthController extends Controller
             'created_at' => Carbon::now()
         ]);
 
-        // Here you would typically send an email with the reset link.
-        // For this example, we'll just return the token.
         return response()->json([
             'message' => 'Password reset link sent.',
             'reset_token' => $token 
@@ -87,12 +75,6 @@ class AuthController extends Controller
 
     public function resetPassword(Request $request)
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
         $reset = DB::table('password_resets')
             ->where('token', $request->token)
             ->where('email', $request->email)

@@ -42,6 +42,7 @@
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen bg-gray-100">
+         {% if 'access_token' in session %}
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-md flex flex-col">
             <div class="flex items-center justify-center h-20 border-b">
@@ -52,11 +53,11 @@
                     <i class="ri-dashboard-line mr-3"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ url_for('recruiter_tests') }}" class="flex items-center px-4 py-2 {% if request.endpoint == 'recruiter_tests' or request.endpoint == 'create_test' or request.endpoint == 'edit_test' %}text-white bg-primary{% else %}text-gray-700 hover:bg-gray-200{% endif %} rounded-lg">
+                <a href="{{ url_for('recruiter_tests') }}" class="flex items-center px-4 py-2 {% if request.endpoint in ['recruiter_tests', 'test_details', 'edit_test', 'add_question_to_test', 'edit_question_for_test'] %}text-white bg-primary{% else %}text-gray-700 hover:bg-gray-200{% endif %} rounded-lg">
                     <i class="ri-file-list-3-line mr-3"></i>
                     <span>Tests</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                <a href="{{ url_for('recruiter_candidates') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
                     <i class="ri-team-line mr-3"></i>
                     <span>Candidates</span>
                 </a>
@@ -76,9 +77,11 @@
                 </a>
             </div>
         </div>
+        {% endif %}
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
+            {% if 'access_token' in session %}
             <!-- Topbar -->
             <header class="bg-white shadow-sm border-b h-20 flex items-center justify-end px-8">
                 <div class="flex items-center space-x-4">
@@ -88,16 +91,9 @@
                             <i class="ri-search-line text-gray-400"></i>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <img class="h-10 w-10 rounded-full object-cover" src="https://i.pravatar.cc/150?u={{ current_user.email }}" alt="User Avatar">
-                        <div>
-                            <div class="font-semibold">{{ current_user.first_name }} {{ current_user.last_name }}</div>
-                            <div class="text-sm text-gray-500">{{ current_user.user_type.name|title }}</div>
-                        </div>
-                    </div>
                 </div>
             </header>
-            
+             {% endif %}
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}

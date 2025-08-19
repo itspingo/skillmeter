@@ -1,70 +1,236 @@
-{% extends "base.html" %}
 
-{% block title %}Edit Test - TestGenius{% endblock %}
-
-{% block content %}
-    <div class="bg-white shadow-md rounded-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Edit Test</h1>
-        <p class="text-gray-600 mb-8">Update the details of your test below.</p>
-        
-        <form action="{{ url_for('edit_test', test_id=test.id) }}" method="POST">
-            <div class="space-y-6">
-                <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700">Test Name</label>
-                    <input type="text" name="title" id="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="{{ test.title }}" required>
-                </div>
-
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="description" name="description" rows="4" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">{{ test.description }}</textarea>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Test Configuration</label>
-                    <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="time_limit_minutes" class="block text-sm text-gray-600">Time Limit (minutes)</label>
-                            <input type="number" name="time_limit_minutes" id="time_limit_minutes" value="{{ test.time_limit_minutes }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Optional">
-                        </div>
-                        <div>
-                            <label for="pass_threshold" class="block text-sm text-gray-600">Passing Threshold (%)</label>
-                            <input type="number" name="pass_threshold" id="pass_threshold" min="0" max="100" value="{{ test.pass_threshold }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Optional">
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Test Settings</label>
-                    <div class="mt-2 space-y-2">
-                        <div class="flex items-center">
-                            <input id="is_public" name="is_public" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.is_public %}checked{% endif %}>
-                            <label for="is_public" class="ml-2 block text-sm text-gray-900">Make this test public</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input id="show_answers" name="show_answers" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.show_answers %}checked{% endif %}>
-                            <label for="show_answers" class="ml-2 block text-sm text-gray-900">Show answers after completion</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input id="randomize_questions" name="randomize_questions" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.randomize_questions %}checked{% endif %}>
-                            <label for="randomize_questions" class="ml-2 block text-sm text-gray-900">Randomize question order</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input id="is_active" name="is_active" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.is_active %}checked{% endif %}>
-                            <label for="is_active" class="ml-2 block text-sm text-gray-900">Active</label>
-                        </div>
-                    </div>
-                </div>
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Test - TestGenius</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px', 
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md flex flex-col">
+            <div class="flex items-center justify-center h-20 border-b">
+                <span class="text-2xl font-['Pacifico'] text-primary">TestGenius</span>
             </div>
-
-            <div class="mt-8 pt-5 border-t border-gray-200 flex justify-end space-x-4">
-                <a href="{{ url_for('recruiter_tests') }}" class="bg-gray-100 text-gray-700 px-6 py-3 font-semibold hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap !rounded-button">
-                    Cancel
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="recruiter_dashboard.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-dashboard-line mr-3"></i>
+                    <span>Dashboard</span>
                 </a>
-                <button type="submit" class="bg-primary text-white px-6 py-3 font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button flex items-center space-x-2">
-                    <i class="ri-save-line"></i>
-                    <span>Update Test</span>
-                </button>
+                <a href="recruiter_tests.html" class="flex items-center px-4 py-2 text-white bg-primary rounded-lg">
+                    <i class="ri-file-list-3-line mr-3"></i>
+                    <span>Tests</span>
+                </a>
+                <a href="recruiter_candidates.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-team-line mr-3"></i>
+                    <span>Candidates</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-bar-chart-box-line mr-3"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-settings-3-line mr-3"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="px-4 py-6 border-t">
+                <a href="home.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                    <i class="ri-logout-box-r-line mr-3"></i>
+                    <span>Logout</span>
+                </a>
             </div>
-        </form>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Topbar -->
+            <header class="bg-white shadow-sm border-b h-20 flex items-center justify-end px-8">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64">
+                        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                            <i class="ri-search-line text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img class="h-10 w-10 rounded-full object-cover" src="https://i.pravatar.cc/150?u=recruiter" alt="Recruiter Avatar">
+                        <div>
+                            <div class="font-semibold">John Doe</div>
+                            <div class="text-sm text-gray-500">Recruiter</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
+                <div class="bg-white shadow-md rounded-lg p-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Edit Test: {{ test.name }}</h1>
+                    <p class="text-gray-600 mb-8">Update the test details below.</p>
+                    
+                    <form action="{{ url_for('edit_test', test_id=test.id) }}" method="POST">
+                        <div class="space-y-6">
+                            <!-- Basic Information Section -->
+                            <div class="border-b border-gray-200 pb-6">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h2>
+                                <div class="grid grid-cols-1 gap-6">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-700">Test Name</label>
+                                        <input type="text" name="name" id="name" value="{{ test.name }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    </div>
+
+                                    <div>
+                                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea id="description" name="description" rows="3" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">{{ test.description }}</textarea>
+                                    </div>
+
+                                    <div>
+                                        <label for="instructions" class="block text-sm font-medium text-gray-700">Instructions</label>
+                                        <textarea id="instructions" name="instructions" rows="4" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">{{ test.instructions }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Test Configuration Section -->
+                            <div class="border-b border-gray-200 pb-6">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Test Configuration</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="time_limit" class="block text-sm font-medium text-gray-700">Time Limit (minutes)</label>
+                                        <input type="number" name="time_limit" id="time_limit" min="1" value="{{ test.time_limit }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    </div>
+
+                                    <div>
+                                        <label for="difficulty_id" class="block text-sm font-medium text-gray-700">Difficulty Level</label>
+                                        <select id="difficulty_id" name="difficulty_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            {% for difficulty in difficulties %}
+                                                <option value="{{ difficulty.id }}" {% if difficulty.id == test.difficulty_id %}selected{% endif %}>{{ difficulty.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label for="pass_threshold" class="block text-sm font-medium text-gray-700">Pass Threshold (%)</label>
+                                        <input type="number" name="pass_threshold" id="pass_threshold" min="0" max="100" value="{{ test.pass_threshold }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+
+                                    <div>
+                                        <label for="base_lang" class="block text-sm font-medium text-gray-700">Base Language</label>
+                                        <select id="base_lang" name="base_lang" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            <option value="en" {% if test.base_lang == 'en' %}selected{% endif %}>English</option>
+                                            <option value="es" {% if test.base_lang == 'es' %}selected{% endif %}>Spanish</option>
+                                            <option value="fr" {% if test.base_lang == 'fr' %}selected{% endif %}>French</option>
+                                            <!-- Add more languages as needed -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Test Settings Section -->
+                            <div class="border-b border-gray-200 pb-6">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Test Settings</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input id="is_public" name="is_public" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.is_public %}checked{% endif %}>
+                                            <label for="is_public" class="ml-2 block text-sm text-gray-700">Make test public</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="is_active" name="is_active" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.is_active %}checked{% endif %}>
+                                            <label for="is_active" class="ml-2 block text-sm text-gray-700">Activate test</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="show_score" name="show_score" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.show_score %}checked{% endif %}>
+                                            <label for="show_score" class="ml-2 block text-sm text-gray-700">Show score to candidates</label>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input id="show_answers" name="show_answers" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.show_answers %}checked{% endif %}>
+                                            <label for="show_answers" class="ml-2 block text-sm text-gray-700">Show correct answers after test</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="randomize_questions" name="randomize_questions" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.randomize_questions %}checked{% endif %}>
+                                            <label for="randomize_questions" class="ml-2 block text-sm text-gray-700">Randomize question order</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="allow_backtracking" name="allow_backtracking" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.allow_backtracking %}checked{% endif %}>
+                                            <label for="allow_backtracking" class="ml-2 block text-sm text-gray-700">Allow backtracking</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Anti-Cheating Measures Section -->
+                            <div>
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">Anti-Cheating Measures</h2>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <input id="webcam_proctoring" name="webcam_proctoring" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.webcam_proctoring %}checked{% endif %}>
+                                        <label for="webcam_proctoring" class="ml-2 block text-sm text-gray-700">Enable Webcam Proctoring</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="screen_recording" name="screen_recording" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.screen_recording %}checked{% endif %}>
+                                        <label for="screen_recording" class="ml-2 block text-sm text-gray-700">Enable Screen Recording</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="detect_tab_switching" name="detect_tab_switching" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if test.detect_tab_switching %}checked{% endif %}>
+                                        <label for="detect_tab_switching" class="ml-2 block text-sm text-gray-700">Detect Tab Switching</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-5 border-t border-gray-200 flex justify-end space-x-4">
+                            <a href="{{ url_for('test_details', test_id=test.id) }}" class="bg-gray-100 text-gray-700 px-6 py-3 font-semibold hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap !rounded-button">
+                                Cancel
+                            </a>
+                            <button type="submit" class="bg-primary text-white px-6 py-3 font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button flex items-center space-x-2">
+                                <i class="ri-save-line"></i>
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
     </div>
-{% endblock %}
+</body>
+</html>
+

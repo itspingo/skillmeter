@@ -12,31 +12,8 @@ class CheatingData extends Model
     protected $table = 'cheating_data';
 
     protected $fillable = [
-        'user_id',
-        'test_id',
-        'process_time',
-        'event_type',
-        'confidence',
-        'duration_seconds',
-        'face_detected',
-        'screenshot_path',
-        'base_lang',
-        'active'
+        'client_id', 'user_id', 'created_by', 'test_id', 'process_time', 'event_type', 'confidence', 'duration_seconds', 'face_detected', 'Screenshot_Path', 'base_lang', 'active', 'created_at', 'updated_at', 'deleted_at'
     ];
 
-    protected $casts = [
-        'process_time' => 'datetime',
-        'face_detected' => 'boolean',
-        'active' => 'boolean'
-    ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function test()
-    {
-        return $this->belongsTo(Test::class);
-    }
 }

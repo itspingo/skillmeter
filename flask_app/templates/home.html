@@ -1,6 +1,49 @@
-{% extends "base.html" %}
-{% block title %}TestGenius - AI-Powered Online Testing Platform{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TestGenius{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-100">
+    
+
+
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background-image: url('https://readdy.ai/api/search-image?query=Modern%20professional%20AI%20technology%20background%20with%20neural%20network%20patterns%2C%20circuit%20board%20elements%2C%20and%20digital%20testing%20interface%20concepts%2C%20clean%20minimalist%20design%20with%20blue%20and%20white%20color%20scheme%2C%20futuristic%20workspace%20environment%2C%20high-tech%20recruitment%20and%20assessment%20visualization%2C%20abstract%20geometric%20shapes%20representing%20data%20analysis%20and%20artificial%20intelligence%2C%20professional%20corporate%20atmosphere%20with%20subtle%20gradients%20and%20clean%20lines&width=1920&height=1080&seq=hero-bg&orientation=landscape'); background-size: cover; background-position: center;">
         <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-transparent"></div>
@@ -65,4 +108,8 @@
             </div>
         </div>
     </section>
-{% endblock %}
+
+    
+
+</body>
+</html>

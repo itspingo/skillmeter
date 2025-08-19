@@ -2,63 +2,102 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\CheatingData;
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
-use App\Http\Resources\CheatingDataResource;
+use Illuminate\Support\Facades\Auth;
 
 class CheatingDataController extends Controller
 {
     public function index(Request $request)
     {
-        $query = CheatingData::with(['user', 'test'])
-            ->latest();
-            
-        if ($request->test_id) {
+        $perPage = $request->get('per_page', 15);
+        
+        $query = CheatingData::query();
+        
+        if (Auth::user()->client_id) {
+            $query->where('client_id', Auth::user()->client_id);
+        }
+        
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+        
+        if ($request->has('test_id')) {
             $query->where('test_id', $request->test_id);
         }
         
-        if ($request->user_id) {
-            $query->where('user_id', $request->user_id);
-        } 
+        if ($request->has('event_type')) {
+            $query->where('event_type', $request->event_type);
+        }
         
-        return CheatingDataResource::collection($query->paginate(25));
+        $data = $query->orderBy('process_time', 'desc')
+                     ->paginate($perPage);
+        
+        return response()->json($data);
     }
 
-    // Record new cheating incident (called by proctoring system)
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'test_id' => 'required|exists:tests,id',
-            'event_type' => 'required|string|max:200',
+            'test_id' => 'required|string',
+            'process_time' => 'required|date',
+            'event_type' => 'nullable|string|max:200',
             'confidence' => 'nullable|string|max:50',
-            'duration_seconds' => 'nullable|numeric',
-            'face_detected' => 'boolean',
-            'screenshot_path' => 'nullable|string',
-            'process_time' => 'required|date'
+            'duration_seconds' => 'nullable|string|max:100',
+            'face_detected' => 'nullable|boolean',
         ]);
-
-        $cheatingData = CheatingData::create($data);
-
-        $cheatingData->load(['user', 'test']);
-
-        return new CheatingDataResource($cheatingData);
+        
+        $cheatingData = CheatingData::create(array_merge($validated, [
+            'client_id' => Auth::user()->client_id,
+            'created_by' => Auth::id(),
+        ]));
+        
+        return response()->json($cheatingData, 201);
     }
 
-    // Get cheating summary for a test
-    public function testSummary($testId)
+    public function show($id)
     {
-        $data = CheatingData::where('test_id', $testId)
-            ->selectRaw('
-                event_type,
-                COUNT(*) as incident_count,
-                AVG(confidence) as avg_confidence
-            ')
-            ->groupBy('event_type')
-            ->get();
-
+        $data = CheatingData::findOrFail($id);
+        
+        if (Auth::user()->client_id && $data->client_id !== Auth::user()->client_id) {
+            abort(403, 'Unauthorized access to this cheating data');
+        }
+        
         return response()->json($data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $data = CheatingData::findOrFail($id);
+        
+        if (Auth::user()->client_id && $data->client_id !== Auth::user()->client_id) {
+            abort(403, 'Unauthorized access to this cheating data');
+        }
+        
+        $validated = $request->validate([
+            'event_type' => 'sometimes|string|max:200',
+            'confidence' => 'sometimes|string|max:50',
+            'duration_seconds' => 'sometimes|string|max:100',
+            'active' => 'sometimes|string|in:1,0',
+        ]);
+        
+        $data->update($validated);
+        
+        return response()->json($data);
+    }
+
+    public function destroy($id)
+    {
+        $data = CheatingData::findOrFail($id);
+        
+        if (Auth::user()->client_id && $data->client_id !== Auth::user()->client_id) {
+            abort(403, 'Unauthorized access to this cheating data');
+        }
+        
+        $data->delete();
+        
+        return response()->json(['message' => 'Cheating data deleted successfully']);
     }
 }

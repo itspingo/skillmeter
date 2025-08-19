@@ -16,6 +16,9 @@ class User extends Authenticatable
     protected $guarded = ['id'];
     protected $hidden = ['password', 'remember_token', 'deleted_at'];
     
+    protected $fillable = [
+        'client_id', 'created_by', 'user_type', 'email', 'password', 'first_name', 'last_name', 'company_name', 'is_active', 'last_login', 'base_lang', 'active'
+    ];
     protected $casts = [
         'is_active' => 'boolean',
         'created_at' => 'datetime',

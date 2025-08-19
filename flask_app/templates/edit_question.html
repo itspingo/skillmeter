@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Question - SkillMeter.ai{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Question</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ url_for('edit_question', question_id=question.id) }}" method="POST">
+                <div class="mb-3">
+                    <label for="question_text" class="form-label">Question Text</label>
+                    <textarea class="form-control" id="question_text" name="question_text" rows="3" required>{{ question.question_text }}</textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="question_type_id" class="form-label">Question Type</label>
+                        <select class="form-select" id="question_type_id" name="question_type_id" required>
+                            {% for type in question_types %}
+                            <option value="{{ type.id }}" {% if question.question_type_id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="question_category_id" class="form-label">Category</label>
+                        <select class="form-select" id="question_category_id" name="question_category_id" required>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if question.question_category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="difficulty_level_id" class="form-label">Difficulty Level</label>
+                        <select class="form-select" id="difficulty_level_id" name="difficulty_level_id" required>
+                            {% for level in difficulty_levels %}
+                            <option value="{{ level.id }}" {% if question.difficulty_level_id == level.id %}selected{% endif %}>{{ level.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="points" class="form-label">Points</label>
+                        <input type="number" class="form-control" id="points" name="points" value="{{ question.points }}" required>
+                    </div>
+                </div>
+
+                <hr>
+                <h5>Options</h5>
+                <div id="options-container">
+                    {% for option in question.options %}
+                    <div class="option-group border p-3 mb-3">
+                        <input type="hidden" name="options[{{ loop.index0 }}][id]" value="{{ option.id }}">
+                        <div class="mb-3">
+                            <label for="option_text_{{ loop.index0 }}" class="form-label">Option Text</label>
+                            <input type="text" class="form-control" id="option_text_{{ loop.index0 }}" name="options[{{ loop.index0 }}][option_text]" value="{{ option.option_text }}" required>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_correct_{{ loop.index0 }}" name="options[{{ loop.index0 }}][is_correct]" {% if option.is_correct %}checked{% endif %}>
+                            <label class="form-check-label" for="is_correct_{{ loop.index0 }}">
+                                Is Correct
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="add-option" class="btn btn-secondary mt-2">Add Option</button>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Update Question</button>
+                    <a href="{{ url_for('recruiter_questions') }}" class="btn btn-link">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let optionIndex = {{ question.options|length }};
+    const container = document.getElementById('options-container');
+    const addButton = document.getElementById('add-option');
+
+    function addOption() {
+        const optionHtml = `
+            <div class="option-group border p-3 mb-3">
+                <div class="mb-3">
+                    <label for="option_text_${optionIndex}" class="form-label">Option Text</label>
+                    <input type="text" class="form-control" id="option_text_${optionIndex}" name="options[${optionIndex}][option_text]" required>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="is_correct_${optionIndex}" name="options[${optionIndex}][is_correct]">
+                    <label class="form-check-label" for="is_correct_${optionIndex}">
+                        Is Correct
+                    </label>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', optionHtml);
+        optionIndex++;
+    }
+
+    addButton.addEventListener('click', addOption);
+});
+</script>
+{% endblock %}
