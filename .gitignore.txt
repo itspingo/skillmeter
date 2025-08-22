@@ -31,7 +31,7 @@ instance/
 .webassets-cache
 
 # Virtual Environments
-# .env
+.env
 venv/
 venv.bak/
 env/
