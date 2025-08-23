@@ -5,13 +5,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__, template_folder=os.path.abspath('../theme'))
+app = Flask(__name__)
+
 
 # Secret key for session management
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 
 # API base URL
-API_BASE_URL = os.environ.get('API_BASE_URL', 'http://127.0.0.1:8001/api')
+API_BASE_URL = os.environ.get('API_BASE_URL')
 
 def make_api_request(method, endpoint, data=None, json=None, token=None):
     """Helper function to make API requests."""
@@ -75,7 +76,7 @@ def register():
             'user_type': request.form['user_type']
         }
         
-        response_data, status_code = make_api_request('POST', 'auth/register', data=data)
+        response_data, status_code = make_api_request('POST', 'register', data=data)
         
         if status_code in [200, 201] and 'access_token' in response_data:
             session['access_token'] = response_data['access_token']
@@ -98,7 +99,7 @@ def dashboard():
     if 'access_token' not in session:
         return redirect(url_for('login'))
     
-    user_data, status_code = make_api_request('GET', 'auth/me', token=session['access_token'])
+    user_data, status_code = make_api_request('GET', 'me', token=session['access_token'])
     
     if status_code == 200:
         user = user_data
@@ -116,7 +117,7 @@ def dashboard():
 @app.route('/logout')
 def logout():
     if 'access_token' in session:
-        make_api_request('POST', 'auth/logout', token=session['access_token'])
+        make_api_request('POST', 'logout', token=session['access_token'])
         session.pop('access_token', None)
         flash('You have been logged out successfully.', 'info')
     return redirect(url_for('login'))
@@ -125,7 +126,7 @@ def logout():
 def forgot_password():
     if request.method == 'POST':
         email = request.form['email']
-        response_data, status_code = make_api_request('POST', 'auth/forgot-password', data={'email': email})
+        response_data, status_code = make_api_request('POST', 'forgot-password', data={'email': email})
         if status_code == 200:
             flash('A password reset link has been sent to your email.', 'success')
         else:
@@ -142,7 +143,7 @@ def reset_password(token):
             'password': request.form['password'],
             'password_confirmation': request.form['password_confirmation']
         }
-        response_data, status_code = make_api_request('POST', 'auth/reset-password', data=data)
+        response_data, status_code = make_api_request('POST', 'reset-password', data=data)
         if status_code == 200:
             flash('Your password has been reset successfully.', 'success')
             return redirect(url_for('login'))
