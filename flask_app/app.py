@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 
 # API base URL
-API_BASE_URL = os.environ.get('API_BASE_URL', 'http://127.0.0.1:8001/api')
+API_BASE_URL = os.environ.get('API_BASE_URL')
 
 def make_api_request(method, endpoint, data=None, json=None, token=None):
     """Helper function to make API requests."""
