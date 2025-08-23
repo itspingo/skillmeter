@@ -52,7 +52,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
-        response_data, status_code = make_api_request('POST', 'auth/login', data={'email': email, 'password': password})
+        response_data, status_code = make_api_request('POST', 'login', data={'email': email, 'password': password})
         
         if status_code == 200 and 'access_token' in response_data:
             session['access_token'] = response_data['access_token']
@@ -260,7 +260,7 @@ def recruiter_tests():
     if 'access_token' not in session:
         return redirect(url_for('login'))
     
-    user_data, status_code = make_api_request('GET', 'auth/me', token=session['access_token'])
+    user_data, status_code = make_api_request('GET', 'me', token=session['access_token'])
     
     if status_code != 200 or user_data.get('user_type', {}).get('name') != 'recruiter':
         flash('Access denied. Recruiter privileges required.', 'danger')
