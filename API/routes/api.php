@@ -137,7 +137,7 @@ Route::middleware(['auth:sanctum', 'api'])->group(function () {
     Route::patch('questions/{id}', [QuestionsController::class, 'update']);
     Route::delete('questions/{id}', [QuestionsController::class, 'destroy']);
     
-    Route::get('question_responses', [QuestionResponsesController::class, 'index']);
+    Route::get('question_responses', [QuestionResponsesController::class, 'index']); 
     Route::post('question_responses', [QuestionResponsesController::class, 'store']);
     Route::get('question_responses/{id}', [QuestionResponsesController::class, 'show']);
     Route::put('question_responses/{id}', [QuestionResponsesController::class, 'update']);

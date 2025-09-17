@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Invitation - TestGenius{% endblock %}
+
+{% block content %}
+    <div class="bg-white shadow-md rounded-lg p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Edit Invitation</h1>
+        <p class="text-gray-600 mb-8">Update invitation details for {{ invitation.invitee_email }}</p>
+        
+        <form action="{{ url_for('edit_invitation', invitation_id=invitation.id) }}" method="POST">
+            <div class="space-y-6">
+                <div>
+                    <label for="invitee_email" class="block text-sm font-medium text-gray-700">Candidate Email *</label>
+                    <input type="email" name="invitee_email" id="invitee_email" value="{{ invitation.invitee_email }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+
+                <div>
+                    <label for="expires_at" class="block text-sm font-medium text-gray-700">Expiration Date *</label>
+                    <input type="datetime-local" name="expires_at" id="expires_at" value="{{ invitation.expires_at|format_datetime_input if invitation.expires_at }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+
+                <div>
+                    <label for="custom_message" class="block text-sm font-medium text-gray-700">Custom Message</label>
+                    <textarea name="custom_message" id="custom_message" rows="3" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">{{ invitation.custom_message }}</textarea>
+                </div>
+
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select name="status" id="status" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="sent" {% if invitation.status == 'sent' %}selected{% endif %}>Sent</option>
+                        <option value="opened" {% if invitation.status == 'opened' %}selected{% endif %}>Opened</option>
+                        <option value="started" {% if invitation.status == 'started' %}selected{% endif %}>Started</option>
+                        <option value="completed" {% if invitation.status == 'completed' %}selected{% endif %}>Completed</option>
+                        <option value="expired" {% if invitation.status == 'expired' %}selected{% endif %}>Expired</option>
+                    </select>
+                </div> 
+
+                <div>
+                    <label for="base_lang" class="block text-sm font-medium text-gray-700">Language</label>
+                    <select name="base_lang" id="base_lang" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="en" {% if invitation.base_lang == 'en' %}selected{% endif %}>English</option>
+                        <option value="es" {% if invitation.base_lang == 'es' %}selected{% endif %}>Spanish</option>
+                        <option value="fr" {% if invitation.base_lang == 'fr' %}selected{% endif %}>French</option>
+                        <option value="de" {% if invitation.base_lang == 'de' %}selected{% endif %}>German</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center">
+                    <input id="active" name="active" type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {% if invitation.active %}checked{% endif %}>
+                    <label for="active" class="ml-2 block text-sm text-gray-900">Active</label>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-5 border-t border-gray-200 flex justify-end space-x-4">
+                <a href="{{ url_for('test_invitations', test_id=invitation.test_id) }}" class="bg-gray-100 text-gray-700 px-6 py-3 font-semibold hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap !rounded-button">
+                    Cancel
+                </a>
+                <button type="submit" class="bg-primary text-white px-6 py-3 font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button flex items-center space-x-2">
+                    <i class="ri-save-line"></i>
+                    <span>Update Invitation</span>
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

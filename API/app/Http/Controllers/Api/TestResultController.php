@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Api\BaseController;
 
 use Illuminate\Http\Request;
 use App\Models\TestResult; // Assuming you have an Eloquent model for test_results
 
-class TestResultController extends Controller
+class TestResultController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // Get all test results. You may want to add pagination for large datasets.
         $testResults = TestResult::all();

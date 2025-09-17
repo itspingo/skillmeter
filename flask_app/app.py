@@ -70,6 +70,39 @@ def make_api_request(method, endpoint, data=None, json=None, token=None):
         print("---------------------------", flush=True)
         return {'error': 'Could not connect to the API server.'}, 503
 
+
+    
+def extract_user_data(response_data):
+    """Extract user data from various possible API response structures."""
+    if not response_data:
+        return None, None
+    
+    user = response_data
+    user_type = None
+    
+    if isinstance(response_data, dict):
+        # Case 1: Direct user data
+        if 'user_type' in response_data:
+            if isinstance(response_data['user_type'], dict):
+                user_type = response_data['user_type'].get('name')
+            else:
+                user_type = response_data['user_type']
+            return response_data, user_type
+        
+        # Case 2: Data nested under 'data' key
+        elif 'data' in response_data and isinstance(response_data['data'], dict):
+            user_data = response_data['data']
+            if 'user_type' in user_data:
+                if isinstance(user_data['user_type'], dict):
+                    user_type = user_data['user_type'].get('name')
+                else:
+                    user_type = user_data['user_type']
+            return user_data, user_type
+    
+    return user, user_type    
+    
+    
+    
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -449,6 +482,8 @@ def delete_test(test_id):
     return redirect(url_for('recruiter_tests'))
 
 
+
+
 @app.route('/tests/<int:test_id>/questions/add', methods=['GET', 'POST'])
 def add_questions(test_id):
     if 'access_token' not in session:
@@ -495,6 +530,168 @@ def remove_question(test_id, question_id):
     return redirect(url_for('test_details', test_id=test_id))
 
 
+# Add these routes after the existing test routes
+
+@app.route('/tests/<int:test_id>/invitations')
+def test_invitations(test_id):
+    if 'access_token' not in session:
+        return redirect(url_for('login'))
+    
+    # Get test details
+    test_data, test_status = make_api_request('GET', f'tests/{test_id}', token=session['access_token'])
+    if test_status != 200:
+        flash('Test not found.', 'danger')
+        return redirect(url_for('recruiter_tests'))
+    
+    # Get invitations for this test
+    invitations_data, invitations_status = make_api_request('GET', 'test_invitations', token=session['access_token'])
+    invitations = []
+    
+    if invitations_status == 200:
+        # Filter invitations for this specific test
+        invitations = [inv for inv in invitations_data.get('data', []) if inv.get('test_id') == test_id]
+    else:
+        flash('Could not fetch invitations.', 'warning')
+    
+    # Extract test data (could be nested under 'data' key or direct)
+    test = test_data
+    if isinstance(test_data, dict) and 'data' in test_data:
+        test = test_data['data']
+    
+    return render_template('test_invitations.html', 
+                         test=test, 
+                         invitations=invitations)
+
+@app.route('/tests/<int:test_id>/invitations/create', methods=['GET', 'POST'])
+def create_invitation(test_id):
+    if 'access_token' not in session:
+        return redirect(url_for('login'))
+    
+    # Get test details
+    test_data, test_status = make_api_request('GET', f'tests/{test_id}', token=session['access_token'])
+    if test_status != 200:
+        flash('Test not found.', 'danger')
+        return redirect(url_for('recruiter_tests'))
+    
+    # Extract test data
+    test = test_data
+    if isinstance(test_data, dict) and 'data' in test_data:
+        test = test_data['data']
+    
+    if request.method == 'POST':
+        data = {
+            'test_id': test_id,
+            'invitee_email': request.form.get('invitee_email'),
+            'expires_at': request.form.get('expires_at'),
+            'custom_message': request.form.get('custom_message'),
+            'client_id': request.form.get('client_id'),
+            'user_id': request.form.get('user_id'),
+            'base_lang': request.form.get('base_lang', 'en')
+        }
+        
+        response_data, status_code = make_api_request('POST', 'test_invitations', json=data, token=session['access_token'])
+        
+        if status_code == 201:
+            flash('Invitation sent successfully!', 'success')
+            return redirect(url_for('test_invitations', test_id=test_id))
+        else:
+            error_message = response_data.get('error', {}).get('message', 'Error creating invitation.')
+            flash(error_message, 'danger')
+    
+    return render_template('create_invitation.html', test=test)
+
+
+@app.route('/invitations/<int:invitation_id>/edit', methods=['GET', 'POST'])
+def edit_invitation(invitation_id):
+    if 'access_token' not in session:
+        return redirect(url_for('login'))
+    
+    # Get invitation details
+    invitation_data, invitation_status = make_api_request('GET', f'test_invitations/{invitation_id}', token=session['access_token'])
+    if invitation_status != 200:
+        flash('Invitation not found.', 'danger')
+        return redirect(url_for('recruiter_tests'))
+    
+    # Extract invitation data
+    invitation = invitation_data
+    if isinstance(invitation_data, dict) and 'data' in invitation_data:
+        invitation = invitation_data['data']
+    
+    if request.method == 'POST':
+        data = {
+            'invitee_email': request.form.get('invitee_email'),
+            'expires_at': request.form.get('expires_at'),
+            'custom_message': request.form.get('custom_message'),
+            'status': request.form.get('status'),
+            'base_lang': request.form.get('base_lang', 'en'),
+            'active': 1 if request.form.get('active') else 0
+        }
+        
+        response_data, status_code = make_api_request('PUT', f'test_invitations/{invitation_id}', json=data, token=session['access_token'])
+        
+        if status_code == 200:
+            flash('Invitation updated successfully!', 'success')
+            return redirect(url_for('test_invitations', test_id=invitation.get('test_id')))
+        else:
+            error_message = response_data.get('error', {}).get('message', 'Error updating invitation.')
+            flash(error_message, 'danger')
+    
+    return render_template('edit_invitation.html', invitation=invitation)
+
+
+
+@app.route('/invitations/<int:invitation_id>/delete', methods=['POST'])
+def delete_invitation(invitation_id):
+    if 'access_token' not in session:
+        return redirect(url_for('login'))
+    
+    # Get invitation details first to redirect to the correct test
+    invitation_data, invitation_status = make_api_request('GET', f'test_invitations/{invitation_id}', token=session['access_token'])
+    test_id = None
+    if invitation_status == 200:
+        invitation = invitation_data
+        if isinstance(invitation_data, dict) and 'data' in invitation_data:
+            invitation = invitation_data['data']
+        test_id = invitation.get('test_id')
+    
+    response_data, status_code = make_api_request('DELETE', f'test_invitations/{invitation_id}', token=session['access_token'])
+    
+    if status_code == 200:
+        flash('Invitation deleted successfully.', 'success')
+    else:
+        error_message = response_data.get('error', {}).get('message', 'Error deleting invitation.')
+        flash(error_message, 'danger')
+    
+    if test_id:
+        return redirect(url_for('test_invitations', test_id=test_id))
+    return redirect(url_for('recruiter_tests'))
+
+
+@app.route('/invitations/<int:invitation_id>/resend', methods=['POST'])
+def resend_invitation(invitation_id):
+    if 'access_token' not in session:
+        return redirect(url_for('login'))
+    
+    response_data, status_code = make_api_request('POST', f'test_invitations/{invitation_id}/resend', token=session['access_token'])
+    
+    if status_code == 200:
+        flash('Invitation resent successfully!', 'success')
+    else:
+        error_message = response_data.get('error', {}).get('message', 'Error resending invitation.')
+        flash(error_message, 'danger')
+    
+    # Get invitation details to redirect to the correct test
+    invitation_data, invitation_status = make_api_request('GET', f'test_invitations/{invitation_id}', token=session['access_token'])
+    if invitation_status == 200:
+        invitation = invitation_data
+        if isinstance(invitation_data, dict) and 'data' in invitation_data:
+            invitation = invitation_data['data']
+        test_id = invitation.get('test_id')
+        return redirect(url_for('test_invitations', test_id=test_id))
+    
+    return redirect(url_for('recruiter_tests'))
+    
+    
 
 @app.route('/test/take/<token>')
 def take_test(token):
@@ -505,6 +702,8 @@ def take_test(token):
         return redirect(url_for('home'))
 
     return render_template('take_test.html', test=test_data.get('data', {}), token=token)
+
+ 
 
 @app.route('/test/start/<token>', methods=['POST'])
 def start_test(token):
@@ -520,6 +719,8 @@ def start_test(token):
     else:
         flash(response_data.get('message', 'Could not start the test.'), 'danger')
         return redirect(url_for('home'))
+
+
 
 @app.route('/test/submit', methods=['POST'])
 def submit_test():

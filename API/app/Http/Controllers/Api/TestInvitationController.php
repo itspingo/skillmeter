@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Api\BaseController;
 
 use Illuminate\Http\Request;
 use App\Models\TestInvitation; // Assuming you have an Eloquent model for test_invitations
 use Illuminate\Validation\Rule;
 
-class TestInvitationController extends Controller
+class TestInvitationController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // Get all test invitations. You may want to add pagination for large datasets.
         $testInvitations = TestInvitation::all();
