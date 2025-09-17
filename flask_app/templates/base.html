@@ -34,10 +34,58 @@
         }
     </script>
     <style>
+        
         :where([class^="ri-"])::before {
             content: "\f3c2";
         }
+
+        /* Custom styles for test interface */
+        .question-container {
+            transition: all 0.2s ease;
+        }
+
+        .question-container:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Animation for recording indicator */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        #recording-indicator {
+            animation: pulse 1s infinite;
+        }
+
+        /* Custom radio buttons */
+        input[type="radio"]:checked + label {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        /* Scrollbar styling */
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
     </style>
+
+
     {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-gray-100">

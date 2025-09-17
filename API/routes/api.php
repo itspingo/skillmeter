@@ -42,7 +42,7 @@ Route::post('/attempts/{attemptId}/submit', [TestAttemptController::class, 'subm
 Route::middleware(['auth:sanctum', 'api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
+  
     // Tests
     // Route::apiResource('tests', TestController::class);
     Route::get('tests', [TestController::class, 'index']);
@@ -193,12 +193,12 @@ Route::middleware(['auth:sanctum', 'api'])->group(function () {
     Route::patch('test_results/{id}', [TestResultController::class, 'update']);
     Route::delete('test_results/{id}', [TestResultController::class, 'destroy']);
     
-    Route::get('user_types', [UserTypeController::class, 'index']);
-    Route::post('user_types', [UserTypeController::class, 'store']);
-    Route::get('user_types/{id}', [UserTypeController::class, 'show']);
-    Route::put('user_types/{id}', [UserTypeController::class, 'update']);
-    Route::patch('user_types/{id}', [UserTypeController::class, 'update']);
-    Route::delete('user_types/{id}', [UserTypeController::class, 'destroy']);
+    // Route::get('user_types', [UserTypeController::class, 'index']);
+    // Route::post('user_types', [UserTypeController::class, 'store']);
+    // Route::get('user_types/{id}', [UserTypeController::class, 'show']);
+    // Route::put('user_types/{id}', [UserTypeController::class, 'update']);
+    // Route::patch('user_types/{id}', [UserTypeController::class, 'update']);
+    // Route::delete('user_types/{id}', [UserTypeController::class, 'destroy']);
 
 
 
@@ -227,11 +227,3 @@ Route::middleware(['auth:sanctum', 'api'])->group(function () {
     });
 });
 
-// The UniversalDataController provides direct, un-scoped access to database tables and has been
-// disabled due to major security vulnerabilities. Any user could access, modify, or delete
-// any data in the allowed tables. It is highly recommended to create dedicated,
-// policy-controlled endpoints for each resource instead of using this controller.
-// Route::post('/data/{operation}', [UniversalDataController::class, 'handleDataOperation'])
-//     ->where('operation', 'create|read|update|delete');
-//
-// Route::get('/schema/{table}', [UniversalDataController::class, 'getTableSchema']);

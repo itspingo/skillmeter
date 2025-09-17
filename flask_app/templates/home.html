@@ -15,11 +15,12 @@
                 extend: {
                     colors: {
                         primary: '#3B82F6',
-                        secondary: '#10B981'
+                        secondary: '#10B981',
+                        'accent-color': '#EF4444' // A new color for emphasis
                     },
                     borderRadius: {
                         'none': '0px',
-                        'sm': '4px',
+                        'sm': '4px', 
                         DEFAULT: '8px',
                         'md': '12px',
                         'lg': '16px',
@@ -41,10 +42,42 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-gray-100">
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold font-pacifico text-gray-900">TestGenius</a>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#features" class="text-gray-600 hover:text-primary transition-colors duration-200">Features</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-primary transition-colors duration-200">Testimonials</a>
+                <a href="#pricing" class="text-gray-600 hover:text-primary transition-colors duration-200">Pricing</a>
+                <a href="#faqs" class="text-gray-600 hover:text-primary transition-colors duration-200">FAQs</a>
+                <a href="#contact" class="text-gray-600 hover:text-primary transition-colors duration-200">Contact</a>
+                <a href="/login" class="bg-primary text-white px-6 py-2 rounded-button font-semibold hover:bg-blue-600 transition-colors duration-200">Login</a>
+                <a href="/register" class="border-2 border-primary text-primary px-6 py-2 rounded-button font-semibold hover:bg-primary hover:text-white transition-colors duration-200">Register</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-primary focus:outline-none">
+                <i class="ri-menu-line text-2xl"></i>
+            </button>
+        </nav>
+    </header>
+
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-white transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex justify-end p-4">
+            <button id="close-mobile-menu-btn" class="text-gray-600 hover:text-primary focus:outline-none">
+                <i class="ri-close-line text-2xl"></i>
+            </button>
+        </div>
+        <div class="flex flex-col items-center space-y-6 text-xl mt-12">
+            <a href="#features" class="text-gray-800 hover:text-primary transition-colors duration-200">Features</a>
+            <a href="#testimonials" class="text-gray-800 hover:text-primary transition-colors duration-200">Testimonials</a>
+            <a href="#pricing" class="text-gray-800 hover:text-primary transition-colors duration-200">Pricing</a>
+            <a href="#faqs" class="text-gray-800 hover:text-primary transition-colors duration-200">FAQs</a>
+            <a href="#contact" class="text-gray-800 hover:text-primary transition-colors duration-200">Contact</a>
+            <a href="/login" class="bg-primary text-white px-8 py-3 rounded-button font-semibold w-2/3 text-center hover:bg-blue-600">Login</a>
+            <a href="/register" class="border-2 border-primary text-primary px-8 py-3 rounded-button font-semibold w-2/3 text-center hover:bg-primary hover:text-white">Register</a>
+        </div>
+    </div>
     
-
-
-    <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background-image: url('https://readdy.ai/api/search-image?query=Modern%20professional%20AI%20technology%20background%20with%20neural%20network%20patterns%2C%20circuit%20board%20elements%2C%20and%20digital%20testing%20interface%20concepts%2C%20clean%20minimalist%20design%20with%20blue%20and%20white%20color%20scheme%2C%20futuristic%20workspace%20environment%2C%20high-tech%20recruitment%20and%20assessment%20visualization%2C%20abstract%20geometric%20shapes%20representing%20data%20analysis%20and%20artificial%20intelligence%2C%20professional%20corporate%20atmosphere%20with%20subtle%20gradients%20and%20clean%20lines&width=1920&height=1080&seq=hero-bg&orientation=landscape'); background-size: cover; background-position: center;">
         <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-transparent"></div>
         <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,20 +90,19 @@
                         Revolutionary testing platform with advanced AI question generation and comprehensive anti-cheating technology. Perfect for recruiters and individuals seeking professional assessment solutions.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button class="bg-primary text-white px-8 py-4 text-lg font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button">
+                        <a href="#recruiter-features" class="bg-primary text-white px-8 py-4 text-lg font-semibold hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap !rounded-button text-center">
                             For Recruiters
-                        </button>
-                        <button class="border-2 border-primary text-primary px-8 py-4 text-lg font-semibold hover:bg-primary hover:text-white transition-colors duration-200 whitespace-nowrap !rounded-button">
+                        </a>
+                        <a href="#individual-features" class="border-2 border-primary text-primary px-8 py-4 text-lg font-semibold hover:bg-primary hover:text-white transition-colors duration-200 whitespace-nowrap !rounded-button text-center">
                             Take Self Assessment
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Key Features Showcase -->
-    <section class="py-20 bg-gray-50">
+    <section id="features" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">Powerful Features for Modern Testing</h2>
@@ -109,7 +141,390 @@
         </div>
     </section>
 
-    
+    <section id="recruiter-features" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1 text-left">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">For Recruiters: Streamline Your Hiring Process</h2>
+                    <p class="text-lg text-gray-600 mb-6">Efficiently screen and assess candidates with tools designed for hiring managers.</p>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-secondary text-2xl mr-3 flex-shrink-0"></i>
+                            <span>Create custom tests tailored to specific job roles.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-secondary text-2xl mr-3 flex-shrink-0"></i>
+                            <span>Invite candidates with unique links and track their progress.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-secondary text-2xl mr-3 flex-shrink-0"></i>
+                            <span>View detailed analytics and candidate performance reports.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <img src="https://readdy.ai/api/search-image?query=Modern%20tech%20recruitment%20dashboard%2C%20hiring%20manager%20view%2C%20AI%20driven%20assessment%2C%20clean%20professional%20interface&width=800&height=600&orientation=landscape" alt="Recruiter dashboard" class="rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <section id="individual-features" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1">
+                    <img src="https://readdy.ai/api/search-image?query=Person%20taking%20an%20online%20test%20on%20a%20laptop%2C%20focused%20expression%2C%20clean%20minimalist%20environment%2C%20skill%20assessment%20concept&width=800&height=600&orientation=landscape" alt="Individual taking a test" class="rounded-xl shadow-2xl">
+                </div>
+                <div class="order-1 lg:order-2 text-left">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">For Individuals: Elevate Your Skills</h2>
+                    <p class="text-lg text-gray-600 mb-6">Assess your expertise and gain valuable insights with our self-assessment tools.</p>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-secondary text-2xl mr-3 flex-shrink-0"></i>
+                            <span>Choose from a wide range of topic-based tests to gauge your knowledge.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-secondary text-2xl mr-3 flex-shrink-0"></i>
+                            <span>Receive immediate scores and detailed feedback upon completion.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-secondary text-2xl mr-3 flex-shrink-0"></i>
+                            <span>Identify areas for improvement and focus your learning.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
+                <p class="text-xl text-gray-600">Trusted by leading companies and professionals worldwide.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <i class="ri-double-quotes-l text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-700 mb-6">"TestGenius has revolutionized our recruitment process. The AI-generated questions are incredibly relevant, and the anti-cheating features give us peace of mind."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0 mr-4"></div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Jane Doe</p>
+                            <p class="text-sm text-gray-600">HR Manager, TechCorp</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <i class="ri-double-quotes-l text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-700 mb-6">"I used TestGenius for a self-assessment before my job interview. The results were spot-on and helped me focus on my weak areas. Highly recommended!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0 mr-4"></div>
+                        <div>
+                            <p class="font-semibold text-gray-900">John Smith</p>
+                            <p class="text-sm text-gray-600">Software Engineer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <i class="ri-double-quotes-l text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-700 mb-6">"The detailed analytics are a game-changer. We can now identify top-performing candidates with a level of precision we never had before."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0 mr-4"></div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Emily White</p>
+                            <p class="text-sm text-gray-600">Talent Acquisition Lead</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Flexible Pricing Plans</h2>
+                <p class="text-xl text-gray-600 mb-6">Choose a plan that fits your needs, whether you're a recruiter or an individual.</p>
+                <div class="flex justify-center items-center space-x-4 mb-8">
+                    <span class="text-lg font-medium text-gray-600">Monthly</span>
+                    <label class="switch">
+                        <input type="checkbox" id="pricing-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="text-lg font-medium text-gray-600">Annually</span>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Basic</h3>
+                    <p class="text-gray-600 mb-4">For individuals and small-scale testing</p>
+                    <div class="text-4xl font-bold text-gray-900 mb-6">
+                        <span id="price-basic">$29</span>
+                        <span class="text-lg font-normal text-gray-600">/month</span>
+                    </div>
+                    <ul class="space-y-3 text-gray-700 mb-8">
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>5 Tests per month</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>AI Question Generation</li>
+                        <li class="flex items-center"><i class="ri-close-fill text-red-500 mr-2"></i>Anti-Cheating Monitoring</li>
+                        <li class="flex items-center"><i class="ri-close-fill text-red-500 mr-2"></i>Detailed Analytics</li>
+                    </ul>
+                    <a href="#" class="block text-center bg-primary text-white py-3 rounded-button font-semibold hover:bg-blue-600 transition-colors duration-200">Get Started</a>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm border-2 border-primary hover:shadow-lg transition-shadow duration-300 transform scale-105">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-2xl font-semibold text-gray-900">Pro</h3>
+                        <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Most Popular</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">For growing teams and professional recruiters</p>
+                    <div class="text-4xl font-bold text-gray-900 mb-6">
+                        <span id="price-pro">$99</span>
+                        <span class="text-lg font-normal text-gray-600">/month</span>
+                    </div>
+                    <ul class="space-y-3 text-gray-700 mb-8">
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>Unlimited Tests</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>AI Question Generation</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>Anti-Cheating Monitoring</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>Detailed Analytics</li>
+                    </ul>
+                    <a href="#" class="block text-center bg-primary text-white py-3 rounded-button font-semibold hover:bg-blue-600 transition-colors duration-200">Get Started</a>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Enterprise</h3>
+                    <p class="text-gray-600 mb-4">For large organizations with custom needs</p>
+                    <div class="text-4xl font-bold text-gray-900 mb-6">
+                        <span class="text-lg font-normal text-gray-600">Custom</span>
+                    </div>
+                    <ul class="space-y-3 text-gray-700 mb-8">
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>All Pro features</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>Dedicated Support</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>Custom Integrations</li>
+                        <li class="flex items-center"><i class="ri-check-fill text-green-500 mr-2"></i>SLA & Compliance</li>
+                    </ul>
+                    <a href="#" class="block text-center border-2 border-gray-300 text-gray-600 py-3 rounded-button font-semibold hover:bg-gray-100 transition-colors duration-200">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="success-stories" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Success Stories</h2>
+                <p class="text-xl text-gray-600">Read how TestGenius has transformed hiring for our clients.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                    <img src="https://readdy.ai/api/search-image?query=corporate%20office%20environment%20with%20happy%20employees%2C%20diverse%20team%2C%20modern%20startup%20vibe&width=600&height=400&orientation=landscape" alt="Success Story 1" class="rounded-lg w-full mb-6">
+                    <p class="text-sm font-semibold text-primary mb-2">CASE STUDY</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Scaling Recruitment by 300% with AI-Powered Testing</h3>
+                    <p class="text-gray-700 mb-4">"Before TestGenius, we were overwhelmed with manual test creation and grading. Our team has now reduced time-to-hire by 40% and improved candidate quality significantly."</p>
+                    <a href="#" class="text-primary font-semibold hover:underline">Read Full Story →</a>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                    <img src="https://readdy.ai/api/search-image?query=developer%20working%20on%20code%20on%20a%20laptop%2C%20creative%20workspace%2C%20programming%20concept&width=600&height=400&orientation=landscape" alt="Success Story 2" class="rounded-lg w-full mb-6">
+                    <p class="text-sm font-semibold text-primary mb-2">SUCCESS</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Finding the Perfect Tech Talent with Unbiased AI</h3>
+                    <p class="text-gray-700 mb-4">"The platform's unbiased assessments helped us discover top talent from diverse backgrounds, which was a huge win for our company culture and innovation."</p>
+                    <a href="#" class="text-primary font-semibold hover:underline">Read Full Story →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faqs" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Find answers to the most common questions about our platform.</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 faq-item">
+                    <div class="flex justify-between items-center cursor-pointer faq-header">
+                        <h3 class="text-lg font-semibold text-gray-900">What makes your AI question generation unique?</h3>
+                        <i class="ri-add-line text-2xl text-gray-500 faq-icon"></i>
+                    </div>
+                    <div class="faq-content mt-4 text-gray-700" style="display: none;">
+                        <p>Our AI analyzes the latest industry trends and job requirements to generate dynamic, relevant, and unique questions that accurately assess a candidate's skills, going beyond static question banks.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 faq-item">
+                    <div class="flex justify-between items-center cursor-pointer faq-header">
+                        <h3 class="text-lg font-semibold text-gray-900">How does the anti-cheating technology work?</h3>
+                        <i class="ri-add-line text-2xl text-gray-500 faq-icon"></i>
+                    </div>
+                    <div class="faq-content mt-4 text-gray-700" style="display: none;">
+                        <p>We use a combination of screen monitoring, webcam proctoring, and behavioral analysis to detect suspicious activity. Our system flags things like multiple browser tabs, face detection, and unusual keystroke patterns.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 faq-item">
+                    <div class="flex justify-between items-center cursor-pointer faq-header">
+                        <h3 class="text-lg font-semibold text-gray-900">Can I customize my test questions?</h3>
+                        <i class="ri-add-line text-2xl text-gray-500 faq-icon"></i>
+                    </div>
+                    <div class="faq-content mt-4 text-gray-700" style="display: none;">
+                        <p>Yes, you can manually add your own questions, edit AI-generated ones, and combine them to create a test that perfectly aligns with your specific needs.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 faq-item">
+                    <div class="flex justify-between items-center cursor-pointer faq-header">
+                        <h3 class="text-lg font-semibold text-gray-900">What payment options do you accept?</h3>
+                        <i class="ri-add-line text-2xl text-gray-500 faq-icon"></i>
+                    </div>
+                    <div class="faq-content mt-4 text-gray-700" style="display: none;">
+                        <p>We accept all major credit cards, including Visa, MasterCard, and American Express. We also offer invoicing for our Enterprise plan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h2>
+                <p class="text-xl text-gray-600">Have questions? Fill out the form below and we'll get back to you shortly.</p>
+            </div>
+            <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <form action="#" method="POST" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" id="name" name="name" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                        <textarea id="message" name="message" rows="5" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-primary text-white px-8 py-3 rounded-button font-semibold hover:bg-blue-600 transition-colors duration-200 w-full sm:w-auto">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+<footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h3 class="text-2xl font-bold mb-4 font-pacifico text-white">TestGenius</h3>
+                <p class="text-gray-400">AI-powered online testing platform for modern recruitment and skill assessment.</p>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors duration-200">Features</a></li>
+                    <li><a href="#pricing" class="text-gray-400 hover:text-white transition-colors duration-200">Pricing</a></li>
+                    <li><a href="#testimonials" class="text-gray-400 hover:text-white transition-colors duration-200">Testimonials</a></li>
+                    <li><a href="#faqs" class="text-gray-400 hover:text-white transition-colors duration-200">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Legal</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Stay Updated</h4>
+                <form action="#" class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="email" placeholder="Your email address" class="w-full px-4 py-2 rounded-button text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-button hover:bg-blue-600 transition-colors duration-200">Subscribe</button>
+                </form>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="ri-twitter-x-fill text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="ri-linkedin-fill text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="ri-facebook-box-fill text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="ri-youtube-fill text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
+            &copy; <span id="current-year"></span> TestGenius. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+
+<script>
+    // Mobile Menu
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const closeMobileMenuBtn = document.getElementById('close-mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.remove('-translate-x-full');
+    });
+
+    closeMobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.add('-translate-x-full');
+    });
+
+    document.querySelectorAll('#mobile-menu a').forEach(item => {
+        item.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+        });
+    });
+
+    // Pricing Toggle
+    const pricingToggle = document.getElementById('pricing-toggle');
+    const priceBasic = document.getElementById('price-basic');
+    const pricePro = document.getElementById('price-pro');
+
+    const prices = {
+        monthly: { basic: 29, pro: 99 },
+        annually: { basic: 299, pro: 999 }
+    };
+
+    pricingToggle.addEventListener('change', () => {
+        if (pricingToggle.checked) {
+            // Annual pricing
+            priceBasic.textContent = `$${prices.annually.basic}`;
+            pricePro.textContent = `$${prices.annually.pro}`;
+        } else {
+            // Monthly pricing
+            priceBasic.textContent = `$${prices.monthly.basic}`;
+            pricePro.textContent = `$${prices.monthly.pro}`;
+        }
+    });
+
+    // FAQ Toggle
+    document.querySelectorAll('.faq-item').forEach(item => {
+        const header = item.querySelector('.faq-header');
+        const content = item.querySelector('.faq-content');
+        const icon = item.querySelector('.faq-icon');
+
+        header.addEventListener('click', () => {
+            const isVisible = content.style.display === 'block';
+
+            // Close all other open FAQs
+            document.querySelectorAll('.faq-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.faq-icon').forEach(i => i.classList.remove('ri-subtract-line', 'text-accent-color'));
+            document.querySelectorAll('.faq-icon').forEach(i => i.classList.add('ri-add-line'));
+
+            // Toggle the clicked one
+            if (!isVisible) {
+                content.style.display = 'block';
+                icon.classList.remove('ri-add-line');
+                icon.classList.add('ri-subtract-line', 'text-accent-color');
+            } else {
+                content.style.display = 'none';
+                icon.classList.remove('ri-subtract-line', 'text-accent-color');
+                icon.classList.add('ri-add-line');
+            }
+        });
+    });
+</script>
 </body>
 </html>

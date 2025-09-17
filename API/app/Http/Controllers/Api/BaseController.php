@@ -15,7 +15,7 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:sanctum');
+        //$this->middleware('auth:sanctum');
     }
 
     protected function scopeQuery($query)

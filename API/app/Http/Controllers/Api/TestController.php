@@ -95,23 +95,34 @@ class TestController extends BaseController
             'data' => $invitations,
         ]);
     }
-
+ 
     public function getByInvitation($token)
     {
         $invitation = TestInvitation::where('token', $token)->firstOrFail();
 
         if ($invitation->expires_at && $invitation->expires_at->isPast()) {
-            return response()->json(['message' => 'This invitation has expired.'], 410);
+            return response()->json([
+                'success' => false,
+                'message' => 'This invitation has expired.'
+            ], 410);
         }
 
         if ($invitation->completed_at) {
-            return response()->json(['message' => 'This test has already been completed.'], 410);
+            return response()->json([
+                'success' => false,
+                'message' => 'This test has already been completed.'
+            ], 410);
         }
 
         if (!$invitation->first_opened_at) {
             $invitation->update(['first_opened_at' => now()]);
         }
 
-        return response()->json($invitation->test->load($this->withRelations));
+        // Return the standardized response format that Flask expects
+        return response()->json([
+            'success' => true,
+            'data' => $invitation->test->load($this->withRelations),
+            'message' => 'Test retrieved successfully'
+        ]);
     }
 }

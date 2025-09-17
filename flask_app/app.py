@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, json
 import requests
 import os
 from dotenv import load_dotenv
@@ -652,7 +652,7 @@ def delete_invitation(invitation_id):
         invitation = invitation_data
         if isinstance(invitation_data, dict) and 'data' in invitation_data:
             invitation = invitation_data['data']
-        test_id = invitation.get('test_id')
+        test_id = invitation.get('test_id') 
     
     response_data, status_code = make_api_request('DELETE', f'test_invitations/{invitation_id}', token=session['access_token'])
     
@@ -691,68 +691,178 @@ def resend_invitation(invitation_id):
     
     return redirect(url_for('recruiter_tests'))
     
-    
+
+
+#http://127.0.0.1:5000/test/take/math123token 
 
 @app.route('/test/take/<token>')
 def take_test(token):
-    # This endpoint uses a public invitation token, so no session auth is needed
     test_data, test_status = make_api_request('GET', f'tests/invitation/{token}')
-    if test_status != 200:
-        flash('Could not fetch the test. The link might be invalid or expired.', 'danger')
+    # print(test_data)  # Debug print
+    # print(test_status)  # Debug print
+    
+    # Check for a successful status code AND the presence of the 'data' key
+    if test_status != 200 :
+        error_msg = test_data.get('message', 'Could not fetch the test. The link might be invalid or expired.')
+        flash(error_msg, 'danger')
         return redirect(url_for('home'))
 
-    return render_template('take_test.html', test=test_data.get('data', {}), token=token)
+    test = test_data['data']
 
- 
+    # Parse the JSON string for each question and remove the answer
+    for question in test.get('questions', []):
+        if 'question_data' in question:
+            try:
+                question_info = json.loads(question['question_data'])
+                # Delete the answer key to prevent it from being sent to the template
+                if 'answer' in question_info:
+                    del question_info['answer']
+                question.update(question_info)
+            except (json.JSONDecodeError, TypeError):
+                print(f"Warning: Could not decode question_data for question ID {question.get('id')}")
 
+    # Store test data in session for later use
+    session['current_test'] = test
+    session['test_token'] = token
+
+    attempt_id = session.get('attempt_id')
+
+    return render_template('take_test.html',
+                           test=test,
+                           attempt_id=attempt_id,
+                           token=token)
+    
+    
 @app.route('/test/start/<token>', methods=['POST'])
 def start_test(token):
     # No auth required to start
     response_data, status_code = make_api_request('POST', f'tests/invitation/{token}/start')
-
+    
+    # print(f"Start test response: {response_data}")  # Debug print
+    # print(f"Start test status: {status_code}")  # Debug print
+    
     if status_code == 200:
-        # The user might need to log in to get a token to submit
-        # For simplicity, let's assume the user is already logged in or the submission is handled differently
         session['attempt_id'] = response_data.get('data', {}).get('id')
-        # Redirect to the test-taking page, which should be protected
-        return redirect(url_for('take_test_active'))
+        session['test_started_at'] = datetime.now().isoformat()
+        
+        # Redirect to the test-taking page
+        return redirect(url_for('take_test', token=token))
     else:
-        flash(response_data.get('message', 'Could not start the test.'), 'danger')
-        return redirect(url_for('home'))
+        error_msg = response_data.get('message', 'Could not start the test.')
+        flash(error_msg, 'danger')
+        # return redirect(url_for('home'))
 
-
-
+# In your Flask application file
 @app.route('/test/submit', methods=['POST'])
 def submit_test():
-    if 'access_token' not in session or 'attempt_id' not in session:
-        flash('Your session is invalid. Please start the test again.', 'warning')
-        return redirect(url_for('login'))
+    # Retrieve the attempt_id from the session, which was stored in the start_test function.
+    attempt_id = session.get('attempt_id')
 
-    attempt_id = session['attempt_id']
+    # If attempt_id is missing, the session is invalid.
+    if not attempt_id:
+        flash('Your test session has expired. Please restart the test.', 'warning')
+        return redirect(url_for('home'))
+
+    # ... (rest of your response collection logic from the form) ...
     responses = []
     for key, value in request.form.items():
         if key.startswith('question_'):
-            question_id = key.split('_')[1]
-            # This assumes single-choice answers. Adapt if multi-choice is possible.
+            question_id = int(key.split('_')[1])
             responses.append({
-                'question_id': int(question_id),
-                'selected_option_ids': [int(value)] 
+                'question_id': question_id,
+                'selected_option': value
             })
 
+    # Prepare the submission data
+    submission_data = {
+        'responses': responses,
+        'time_taken': None # Placeholder, your full code calculates this
+    }
+
+    # Make the API call using the correct attempt_id from the session.
+    # The 'json' parameter is correctly passed to make_api_request.
     response_data, status_code = make_api_request(
         'POST',
         f'attempts/{attempt_id}/submit',
-        json={'responses': responses},
-        token=session['access_token']
+        json=submission_data
     )
 
+    # ... (rest of your success/error handling) ...
     if status_code == 200:
-        session.pop('attempt_id', None)
         flash('Test submitted successfully!', 'success')
+        # Redirect to a success page or dashboard
         return redirect(url_for('dashboard'))
     else:
-        flash(response_data.get('message', 'There was an error submitting your test.'), 'danger')
-        return redirect(url_for('take_test_active')) # Or wherever the active test page is
+        error_msg = response_data.get('message', 'There was an error submitting your test.')
+        flash(error_msg, 'danger')
+        return redirect(url_for('dashboard'))
+    
+# @app.route('/test/submit', methods=['POST'])
+# def submit_test():
+#     attempt_id = request.form.get('attempt_id')
+    
+#     if not attempt_id:
+#         flash('Your session is invalid. Please start the test again.', 'warning')
+#         return redirect(url_for('home'))
+    
+#     responses = []
+    
+#     for key, value in request.form.items():
+#         if key.startswith('question_'):
+#             question_id = key.split('_')[1]
+#             responses.append({
+#                 'question_id': int(question_id),
+#                 'selected_option': value
+#             })
+    
+#     # Calculate time taken if available
+#     time_taken = None
+#     if 'test_started_at' in session:
+#         try:
+#             started_at = datetime.fromisoformat(session['test_started_at'])
+#             time_taken = (datetime.now() - started_at).total_seconds()
+#         except:
+#             pass
+    
+#     submission_data = {
+#         'responses': responses,
+#         'time_taken': time_taken
+#     }
+    
+#     # Use the token from session if available
+#     token = session.get('test_token', '')
+    
+#     response_data, status_code = make_api_request(
+#         'POST',
+#         f'attempts/{attempt_id}/submit',
+#         json=submission_data,
+#         token=session.get('access_token', '')
+#     )
+
+#     # Clean up session
+#     session.pop('attempt_id', None)
+#     session.pop('test_started_at', None)
+#     session.pop('current_test', None)
+#     session.pop('test_token', None)
+    
+#     if status_code == 200:
+#         flash('Test submitted successfully!', 'success')
+#         return redirect(url_for('dashboard'))
+#     else:
+#         error_msg = response_data.get('message', 'There was an error submitting your test.')
+#         flash(error_msg, 'danger')
+#         return redirect(url_for('dashboard'))
+
+@app.route('/test/active/<token>')
+def take_test_active(token):
+    if 'attempt_id' not in session or token != session.get('test_token'):
+        flash('Please start the test first.', 'warning')
+        return redirect(url_for('start_test', token=token))
+    
+    test_data = session.get('current_test', {})
+    attempt_id = session.get('attempt_id')
+    
+    return render_template('take_test.html', test=test_data, attempt_id=attempt_id)
 
 
 @app.route('/tests/<int:test_id>/questions')
